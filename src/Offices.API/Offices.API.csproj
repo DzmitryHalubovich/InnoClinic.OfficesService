@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<BaseOutputPath>bin\</BaseOutputPath>
+	<DocumentationFile>obj\Debug\net8.0\Offices.API.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Offices.Contracts\Offices.Contracts.csproj" />
+    <ProjectReference Include="..\Offices.Infrastructure\Offices.Infrastructure.csproj" />
+    <ProjectReference Include="..\Offices.Presentation\Offices.Presentation.csproj" />
+    <ProjectReference Include="..\Offices.Services.Abstractions\Offices.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\Offices.Services\Offices.Services.csproj" />
+  </ItemGroup>
+
+</Project>
