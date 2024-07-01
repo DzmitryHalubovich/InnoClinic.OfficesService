@@ -5,6 +5,7 @@ using Offices.Contracts.DTOs;
 using Offices.Presentation.ModelBinders;
 using Offices.Services.Abstractions;
 using OneOf.Types;
+using System.Net.Mime;
 
 namespace Offices.Presentation.Controllers;
 
@@ -50,7 +51,7 @@ public class OfficesController : ControllerBase
     /// <response code="200">Returns offices successfully</response>
     /// <response code="404">Returns if there aren't any offices in the database</response>
     [HttpGet]
-    [Produces("application/json")]
+    //[Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllOffices()
@@ -89,6 +90,7 @@ public class OfficesController : ControllerBase
     /// <param name="officesIds">Ids of offices</param>
     /// <returns></returns>
     /// <response code="200">Returns offices successfully</response>
+    /// 
     /// <response code="404">Returns if there aren't any offices in the database</response>
     [HttpGet("collection/({officesIds})")]
     [Produces("application/json")]
@@ -154,6 +156,7 @@ public class OfficesController : ControllerBase
     /// <response code="400">Returns if entity is invalid</response>
     [HttpPost]
     [Produces("application/json")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddOffice(IValidator<OfficeCreateDTO> validator,

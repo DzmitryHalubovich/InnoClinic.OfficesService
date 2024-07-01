@@ -73,3 +73,5 @@ void ConfigureServices(IServiceCollection services)
         options.IncludeXmlComments(xmlFilename);
     });
 }
+
+public partial class Program { }

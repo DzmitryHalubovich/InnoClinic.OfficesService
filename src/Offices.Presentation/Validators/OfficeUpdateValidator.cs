@@ -10,6 +10,8 @@ public class OfficeUpdateValidator : AbstractValidator<OfficeUpdateDTO>
     {
         RuleFor(o => o.IsActive)
             .Must((status) => (status == Status.Active || status == Status.Inactive));
+        RuleFor(o => o.PhotoId)
+            .Must(o => o is null || o.Length > 0);
         RuleFor(o => o.City)
             .NotEmpty()
             .MaximumLength(100);
@@ -18,9 +20,10 @@ public class OfficeUpdateValidator : AbstractValidator<OfficeUpdateDTO>
             .MaximumLength(100);
         RuleFor(o => o.HouseNumber)
             .NotEmpty()
-            .MaximumLength(50);
+            .MaximumLength(20);
         RuleFor(o => o.OfficeNumber)
-            .MaximumLength(50);
+            .Must(o => o is null || o.Length > 0)
+            .MaximumLength(20);
         RuleFor(o => o.RegistryPhoneNumber)
             .Matches("^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$")
             .WithMessage("Wrong phone format.")

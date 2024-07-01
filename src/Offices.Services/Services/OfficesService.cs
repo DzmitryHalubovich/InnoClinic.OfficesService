@@ -95,7 +95,18 @@ public class OfficesService : IOfficesService
 
         office = _mapper.Map<Office>(updatedOffice);
 
-        await _officesRepository.UpdateAsync(officeId, office);
+        office.OfficeId = officeId;
+
+        try
+        {
+            await _officesRepository.UpdateAsync(officeId, office);
+        }
+        catch (Exception ex)
+        {
+            await Console.Out.WriteLineAsync(ex.Message);
+            throw;
+        }
+
 
         return new Success();
     }
