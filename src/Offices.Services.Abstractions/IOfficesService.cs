@@ -6,7 +6,7 @@ namespace Offices.Services.Abstractions;
 
 public interface IOfficesService
 {
-    public Task<OneOf<List<OfficeShortInfoDTO>, NotFound>> GetAllOfficesAsync();
+    public Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetAllOfficesAsync();
 
     public Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetOfficesByIdsAsync(IEnumerable<string> officesIds);
 

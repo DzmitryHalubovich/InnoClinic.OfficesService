@@ -19,7 +19,7 @@ public class OfficesService : IOfficesService
         _mapper = mapper;
     }
 
-    public async Task<OneOf<List<OfficeShortInfoDTO>, NotFound>> GetAllOfficesAsync()
+    public async Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetAllOfficesAsync()
     {
         var offices = await _officesRepository.GetAllAsync();
 
@@ -28,7 +28,7 @@ public class OfficesService : IOfficesService
             return new NotFound();
         }
 
-        var mappedOfficesCollection = _mapper.Map<List<OfficeShortInfoDTO>>(offices);
+        var mappedOfficesCollection = _mapper.Map<List<OfficeDetailsDTO>>(offices);
 
         return mappedOfficesCollection;
     }
@@ -93,20 +93,11 @@ public class OfficesService : IOfficesService
             return new NotFound();
         }
 
-        office = _mapper.Map<Office>(updatedOffice);
+        _mapper.Map(updatedOffice,office);
 
         office.OfficeId = officeId;
 
-        try
-        {
-            await _officesRepository.UpdateAsync(officeId, office);
-        }
-        catch (Exception ex)
-        {
-            await Console.Out.WriteLineAsync(ex.Message);
-            throw;
-        }
-
+        await _officesRepository.UpdateAsync(officeId, office);
 
         return new Success();
     }

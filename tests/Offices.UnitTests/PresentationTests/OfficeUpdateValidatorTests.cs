@@ -11,11 +11,11 @@ public class OfficeUpdateValidatorTests
     private const string StringWith101Symbols = "SM0t9vW61PepITq61TS4GPMsIpMpzR12FxSgT1StDsAzGVR2tBHOCwSdaDebzUnib7QeMRp2W4gTTgNwVhDC3nwpCR521OQuIXgx1";
     private const string StringWith21Symbols = "67uLGP6pBcUm6kOro4CYX";
 
-    private readonly OfficeUpdateValidator _sut;
+    private readonly OfficeUpdateValidator _officeUpdateValidator;
 
     public OfficeUpdateValidatorTests()
     {
-        _sut = new OfficeUpdateValidator();
+        _officeUpdateValidator = new OfficeUpdateValidator();
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class OfficeUpdateValidatorTests
                 IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeModel);
 
         //Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -55,7 +55,7 @@ public class OfficeUpdateValidatorTests
                 IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeModel);
 
         //Assert
         Assert.Equal(expectedValidationResult, result.IsValid);
@@ -78,7 +78,7 @@ public class OfficeUpdateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeUpdateModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeUpdateModel);
 
         //Assert
         result.ShouldHaveValidationErrorFor(x => x.City);
@@ -101,7 +101,7 @@ public class OfficeUpdateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeUpdateModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeUpdateModel);
 
         //Assert
         result.ShouldHaveValidationErrorFor(x => x.Street);
@@ -124,7 +124,7 @@ public class OfficeUpdateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeUpdateModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeUpdateModel);
 
         //Assert
         result.ShouldHaveValidationErrorFor(x => x.HouseNumber);
@@ -148,7 +148,7 @@ public class OfficeUpdateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeUpdateModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeUpdateModel);
 
         //Assert
         Assert.Equal(expectedValidationResult, result.IsValid);
@@ -173,7 +173,7 @@ public class OfficeUpdateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeUpdateModel);
+        var result = _officeUpdateValidator.TestValidate(fakeOfficeUpdateModel);
 
         //Assert
         Assert.Equal(expectedValidationResult, result.IsValid);
