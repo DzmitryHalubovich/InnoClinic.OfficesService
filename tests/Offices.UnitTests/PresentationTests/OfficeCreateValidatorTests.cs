@@ -12,15 +12,14 @@ public class OfficeCreateValidatorTests
     private const string StringWith101Symbols = "SM0t9vW61PepITq61TS4GPMsIpMpzR12FxSgT1StDsAzGVR2tBHOCwSdaDebzUnib7QeMRp2W4gTTgNwVhDC3nwpCR521OQuIXgx1";
     private const string StringWith21Symbols = "67uLGP6pBcUm6kOro4CYX";
 
-    private readonly OfficeCreateValidator _sut;
+    private readonly OfficeCreateValidator _officeCreateValidator;
     private readonly Fixture _fixture;
 
     public OfficeCreateValidatorTests()
     {
-        _sut = new OfficeCreateValidator();
+        _officeCreateValidator = new OfficeCreateValidator();
         _fixture = new Fixture();
         _fixture.Customize(new OfficeCreateDtoCustomization());
-        
     }
 
     [Fact]
@@ -30,7 +29,7 @@ public class OfficeCreateValidatorTests
         var validOfficeDto = _fixture.Create<OfficeCreateDTO>();
 
         //Act
-        var result = _sut.TestValidate(validOfficeDto);
+        var result = _officeCreateValidator.TestValidate(validOfficeDto);
 
         //Assert
         result.ShouldNotHaveAnyValidationErrors();
@@ -53,7 +52,7 @@ public class OfficeCreateValidatorTests
                 IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeModel);
+        var result = _officeCreateValidator.TestValidate(fakeOfficeModel);
 
         //Assert
         Assert.Equal(expectedValidationResult, result.IsValid);
@@ -76,7 +75,7 @@ public class OfficeCreateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeModel);
+        var result = _officeCreateValidator.TestValidate(fakeOfficeModel);
 
         //Assert
         result.ShouldHaveValidationErrorFor(x => x.City);
@@ -99,7 +98,7 @@ public class OfficeCreateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeCreateModel);
+        var result = _officeCreateValidator.TestValidate(fakeOfficeCreateModel);
 
         //Assert
         result.ShouldHaveValidationErrorFor(x => x.Street);
@@ -122,7 +121,7 @@ public class OfficeCreateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeCreateModel);
+        var result = _officeCreateValidator.TestValidate(fakeOfficeCreateModel);
 
         //Assert
         result.ShouldHaveValidationErrorFor(x => x.HouseNumber);
@@ -145,7 +144,7 @@ public class OfficeCreateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeCreateModel);
+        var result = _officeCreateValidator.TestValidate(fakeOfficeCreateModel);
 
         //Assert
         Assert.Equal(expectedValidationResult, result.IsValid);
@@ -170,7 +169,7 @@ public class OfficeCreateValidatorTests
                IsActive: Status.Active);
 
         //Act
-        var result = _sut.TestValidate(fakeOfficeCreateModel);
+        var result = _officeCreateValidator.TestValidate(fakeOfficeCreateModel);
 
         //Assert
         Assert.Equal(expectedValidationResult, result.IsValid);

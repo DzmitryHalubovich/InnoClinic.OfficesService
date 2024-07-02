@@ -16,14 +16,14 @@ public class OfficesControllerTests
     private readonly Mock<IOfficesService> _officesServiceMock;
     private readonly Mock<IValidator<OfficeCreateDTO>> _officeCreateValidator;
     private readonly Mock<IValidator<OfficeUpdateDTO>> _officeUpdateValidator;
-    private readonly OfficesController _sut;
+    private readonly OfficesController _officesController;
 
     public OfficesControllerTests()
     {
         _officesServiceMock = new Mock<IOfficesService>();
         _officeCreateValidator = new Mock<IValidator<OfficeCreateDTO>>();
         _officeUpdateValidator = new Mock<IValidator<OfficeUpdateDTO>>();
-        _sut = new OfficesController(_officesServiceMock.Object);
+        _officesController = new OfficesController(_officesServiceMock.Object);
     }
 
     [Fact]
@@ -31,10 +31,10 @@ public class OfficesControllerTests
     {
         //Arrange
         _officesServiceMock.Setup(x => x.GetAllOfficesAsync())
-            .ReturnsAsync(It.IsAny<List<OfficeShortInfoDTO>>());
+            .ReturnsAsync(It.IsAny<List<OfficeDetailsDTO>>());
 
         //Act
-        var result = await _sut.GetAllOffices();
+        var result = await _officesController.GetAllOffices();
 
         //Assert
         Assert.IsType<OkObjectResult>(result);
@@ -49,7 +49,7 @@ public class OfficesControllerTests
             .ReturnsAsync(new NotFound());
 
         //Act
-        var result = await _sut.GetAllOffices();
+        var result = await _officesController.GetAllOffices();
 
         //Assert
         Assert.IsType<NotFoundResult>(result);
@@ -64,7 +64,7 @@ public class OfficesControllerTests
             .ReturnsAsync(new Fixture().Create<OfficeDetailsDTO>());
 
         //Act
-        var result = await _sut.GetOfficeById(fakeOfficeId);
+        var result = await _officesController.GetOfficeById(fakeOfficeId);
 
         //Assert
         Assert.IsType<OkObjectResult>(result);
@@ -79,7 +79,7 @@ public class OfficesControllerTests
             .ReturnsAsync(new NotFound());
 
         //Act
-        var result = await _sut.GetOfficeById(fakeOfficeId);
+        var result = await _officesController.GetOfficeById(fakeOfficeId);
 
         //Assert
         Assert.IsType<NotFoundResult>(result);
@@ -96,7 +96,7 @@ public class OfficesControllerTests
             .Returns(new ValidationResult());
 
         //Act
-        var result = await _sut.AddOffice(_officeCreateValidator.Object, fakeOfficeModel);
+        var result = await _officesController.AddOffice(_officeCreateValidator.Object, fakeOfficeModel);
 
         //Assert
         Assert.IsType<CreatedAtRouteResult>(result);
@@ -114,7 +114,7 @@ public class OfficesControllerTests
             .Returns(new ValidationResult() { Errors = { new Fixture().Create<ValidationFailure>() } });
 
         //Act
-        var result = await _sut.AddOffice(_officeCreateValidator.Object, newOfficeDto);
+        var result = await _officesController.AddOffice(_officeCreateValidator.Object, newOfficeDto);
 
         //Assert
         Assert.IsType<BadRequestObjectResult>(result);
@@ -130,7 +130,7 @@ public class OfficesControllerTests
             .ReturnsAsync(new Success());
 
         //Act
-        var result = await _sut.DeleteOfficeById(fakeOfficeId);
+        var result = await _officesController.DeleteOfficeById(fakeOfficeId);
 
         //Assert
         Assert.IsType<NoContentResult>(result);
@@ -145,7 +145,7 @@ public class OfficesControllerTests
             .ReturnsAsync(new NotFound());
 
         //Act
-        var result = await _sut.DeleteOfficeById(fakeOfficeId);
+        var result = await _officesController.DeleteOfficeById(fakeOfficeId);
 
         //Assert
         Assert.IsType<NotFoundResult>(result);
@@ -162,7 +162,7 @@ public class OfficesControllerTests
             .Returns(new ValidationResult());
 
         //Act
-        var result = await _sut.UpdateOfficeById(_officeUpdateValidator.Object, fakeOfficeModel, fakeOfficeId);
+        var result = await _officesController.UpdateOfficeById(_officeUpdateValidator.Object, fakeOfficeModel, fakeOfficeId);
 
         //Assert
         Assert.IsType<NoContentResult>(result);
@@ -180,7 +180,7 @@ public class OfficesControllerTests
             .Returns(new ValidationResult() { Errors = { new Fixture().Create<ValidationFailure>() } });
 
         //Act
-        var result = await _sut.UpdateOfficeById(_officeUpdateValidator.Object, fakeOfficeModel, fakeOfficeId);
+        var result = await _officesController.UpdateOfficeById(_officeUpdateValidator.Object, fakeOfficeModel, fakeOfficeId);
 
         //Assert
         Assert.IsType<BadRequestObjectResult>(result);
@@ -198,7 +198,7 @@ public class OfficesControllerTests
             .Returns(new ValidationResult());
 
         //Act
-        var result = await _sut.UpdateOfficeById(_officeUpdateValidator.Object, fakeOfficeModel, fakeOfficeId);
+        var result = await _officesController.UpdateOfficeById(_officeUpdateValidator.Object, fakeOfficeModel, fakeOfficeId);
 
         //Assert
         Assert.IsType<NotFoundResult>(result);
@@ -214,7 +214,7 @@ public class OfficesControllerTests
             .ReturnsAsync(It.IsAny<List<OfficeDetailsDTO>>());
 
         //Act
-        var result = await _sut.GetOfficesByIds(It.IsAny<IEnumerable<string>>());
+        var result = await _officesController.GetOfficesByIds(It.IsAny<IEnumerable<string>>());
 
         //Assert
         Assert.IsType<OkObjectResult>(result);
@@ -229,7 +229,7 @@ public class OfficesControllerTests
             .ReturnsAsync(new NotFound());
 
         //Act
-        var result = await _sut.GetOfficesByIds(It.IsAny<IEnumerable<string>>());
+        var result = await _officesController.GetOfficesByIds(It.IsAny<IEnumerable<string>>());
 
         //Assert
         Assert.IsType<NotFoundResult>(result);

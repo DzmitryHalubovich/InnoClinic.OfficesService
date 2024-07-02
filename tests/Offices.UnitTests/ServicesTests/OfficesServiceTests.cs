@@ -5,14 +5,13 @@ using Offices.Contracts.DTOs;
 using Offices.Domain.Entities;
 using Offices.Domain.Interfaces;
 using Offices.Services.Services;
-using OneOf;
 using OneOf.Types;
 
 namespace Offices.UnitTests.ServicesTests;
 
 public class OfficesServiceTests
 {
-    private readonly OfficesService _sut;
+    private readonly OfficesService _officesService;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IOfficesRepository> _officesRepositoryMock;
 
@@ -20,7 +19,7 @@ public class OfficesServiceTests
     {
         _mapperMock = new Mock<IMapper>();
         _officesRepositoryMock = new Mock<IOfficesRepository>();
-        _sut = new OfficesService(_officesRepositoryMock.Object, _mapperMock.Object);
+        _officesService = new OfficesService(_officesRepositoryMock.Object, _mapperMock.Object);
     }
 
     [Fact]
@@ -28,21 +27,21 @@ public class OfficesServiceTests
     {
         //Arrange
         var officesListMock = new Fixture().Create<List<Office>>();
-        var mappedOfficesListMock = new Fixture().Create<List<OfficeShortInfoDTO>>();
+        var mappedOfficesListMock = new Fixture().Create<List<OfficeDetailsDTO>>();
 
         _officesRepositoryMock.Setup(x => x.GetAllAsync())
             .ReturnsAsync(officesListMock);
 
-        _mapperMock.Setup(x => x.Map<List<OfficeShortInfoDTO>>(officesListMock))
+        _mapperMock.Setup(x => x.Map<List<OfficeDetailsDTO>>(officesListMock))
             .Returns(mappedOfficesListMock);
 
         //Act
-        var result = await _sut.GetAllOfficesAsync();
+        var result = await _officesService.GetAllOfficesAsync();
 
         //Assert
-        Assert.IsType<List<OfficeShortInfoDTO>>(result.Value);
+        Assert.IsType<List<OfficeDetailsDTO>>(result.Value);
         _officesRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
-        _mapperMock.Verify(x => x.Map<List<OfficeShortInfoDTO>>(officesListMock), Times.Once);
+        _mapperMock.Verify(x => x.Map<List<OfficeDetailsDTO>>(officesListMock), Times.Once);
     }
 
     [Fact]
@@ -50,21 +49,21 @@ public class OfficesServiceTests
     {
         //Arrange
         var emptyOfficesListMock = new List<Office>();
-        var mappedOfficesListMock = new Fixture().Create<List<OfficeShortInfoDTO>>();
+        var mappedOfficesListMock = new Fixture().Create<List<OfficeDetailsDTO>>();
 
         _officesRepositoryMock.Setup(x => x.GetAllAsync())
             .ReturnsAsync(emptyOfficesListMock);
 
-        _mapperMock.Setup(x => x.Map<List<OfficeShortInfoDTO>>(emptyOfficesListMock))
+        _mapperMock.Setup(x => x.Map<List<OfficeDetailsDTO>>(emptyOfficesListMock))
             .Returns(mappedOfficesListMock);
 
         //Act
-        var result = await _sut.GetAllOfficesAsync();
+        var result = await _officesService.GetAllOfficesAsync();
 
         //Assert
         Assert.IsType<NotFound>(result.Value);
         _officesRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
-        _mapperMock.Verify(x => x.Map<List<OfficeShortInfoDTO>>(emptyOfficesListMock), Times.Never);
+        _mapperMock.Verify(x => x.Map<List<OfficeDetailsDTO>>(emptyOfficesListMock), Times.Never);
     }
 
     [Fact]
@@ -82,7 +81,7 @@ public class OfficesServiceTests
             .Returns(mappedOfficesListMock);
 
         //Act
-        var result = await _sut.GetOfficesByIdsAsync(officesIdsCollection);
+        var result = await _officesService.GetOfficesByIdsAsync(officesIdsCollection);
 
         //Assert
         Assert.IsType<List<OfficeDetailsDTO>>(result.Value);
@@ -105,7 +104,7 @@ public class OfficesServiceTests
             .Returns(mappedOfficesListMock);
 
         //Act
-        var result = await _sut.GetOfficesByIdsAsync(officesIdsCollection);
+        var result = await _officesService.GetOfficesByIdsAsync(officesIdsCollection);
 
         //Assert
         Assert.IsType<NotFound>(result.Value);
@@ -128,7 +127,7 @@ public class OfficesServiceTests
             .Returns(mappedOfficeMock);
 
         //Act
-        var result = await _sut.GetOfficeByIdAsync(fakeOfficeId);
+        var result = await _officesService.GetOfficeByIdAsync(fakeOfficeId);
 
         //Assert
         Assert.IsType<OfficeDetailsDTO>(result.Value);
@@ -149,7 +148,7 @@ public class OfficesServiceTests
             .Returns(It.IsAny<OfficeDetailsDTO>());
 
         //Act
-        var result = await _sut.GetOfficeByIdAsync(fakeOfficeId);
+        var result = await _officesService.GetOfficeByIdAsync(fakeOfficeId);
 
         //Assert
         Assert.IsType<NotFound>(result.Value);
@@ -171,7 +170,7 @@ public class OfficesServiceTests
             .Returns(officeMock);
 
         //Act
-        var result = await _sut.AddNewOfficeAsync(newOfficeDTOMock);
+        var result = await _officesService.AddNewOfficeAsync(newOfficeDTOMock);
 
         //Assert
         Assert.IsType<string>(result);
@@ -192,7 +191,7 @@ public class OfficesServiceTests
         _officesRepositoryMock.Setup(x => x.DeleteAsync(fakeOfficeId));
 
         //Act
-        var result = await _sut.DeleteOfficeAsync(fakeOfficeId);
+        var result = await _officesService.DeleteOfficeAsync(fakeOfficeId);
 
         //Assert
         Assert.IsType<Success>(result.Value);
@@ -201,7 +200,7 @@ public class OfficesServiceTests
     }
 
     [Fact]
-    public async Task DeleteOfficeAsync_PassIdOfNotExistedOffice_SuccessResult()
+    public async Task DeleteOfficeAsync_PassIdOfNotExistedOffice_NotFoundResult()
     {
         //Arrange
         var fakeOfficeId = new Fixture().Create<string>().Substring(0, 24);
@@ -213,7 +212,7 @@ public class OfficesServiceTests
         _officesRepositoryMock.Setup(x => x.DeleteAsync(fakeOfficeId));
 
         //Act
-        var result = await _sut.DeleteOfficeAsync(fakeOfficeId);
+        var result = await _officesService.DeleteOfficeAsync(fakeOfficeId);
 
         //Assert
         Assert.IsType<NotFound>(result.Value);
@@ -234,16 +233,26 @@ public class OfficesServiceTests
 
         _officesRepositoryMock.Setup(x => x.UpdateAsync(fakeOfficeId, fakeOffice));
 
-        _mapperMock.Setup(x => x.Map<Office>(fakeOfficeUpdateModel))
-            .Returns(fakeOffice);
+        MapperConfiguration configuration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<MapperProfile>();
+        });
+
+        IMapper mapper = new Mapper(configuration);
+
+        var officesService = new OfficesService(_officesRepositoryMock.Object, mapper);
 
         //Act
-        var result = await _sut.UpdateOfficeAsync(fakeOfficeId, fakeOfficeUpdateModel);
+        var result = await officesService.UpdateOfficeAsync(fakeOfficeId, fakeOfficeUpdateModel);
 
         //Assert
         Assert.IsType<Success>(result.Value);
+        Assert.Equal(fakeOffice.City, fakeOfficeUpdateModel.City);
+        Assert.Equal(fakeOffice.Street, fakeOfficeUpdateModel.Street);
+        Assert.Equal(fakeOffice.OfficeNumber, fakeOfficeUpdateModel.OfficeNumber);
+        Assert.Equal(fakeOffice.HouseNumber, fakeOfficeUpdateModel.HouseNumber);
+        Assert.Equal(fakeOffice.RegistryPhoneNumber, fakeOfficeUpdateModel.RegistryPhoneNumber);
         _officesRepositoryMock.Verify(x => x.GetByIdAsync(fakeOfficeId), Times.Once);
-        _mapperMock.Verify(x => x.Map<Office>(fakeOfficeUpdateModel), Times.Once);
         _officesRepositoryMock.Verify(x => x.UpdateAsync(fakeOfficeId, fakeOffice), Times.Once);
     }
 
@@ -264,7 +273,7 @@ public class OfficesServiceTests
             .Returns(fakeOffice);
 
         //Act
-        var result = await _sut.UpdateOfficeAsync(fakeOfficeId, fakeOfficeUpdateModel);
+        var result = await _officesService.UpdateOfficeAsync(fakeOfficeId, fakeOfficeUpdateModel);
 
         //Assert
         Assert.IsType<NotFound>(result.Value);

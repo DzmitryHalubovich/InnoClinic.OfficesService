@@ -11,6 +11,7 @@ public class ArrayModelBinder : IModelBinder
         if (!bindingContext.ModelMetadata.IsEnumerableType)
         {
             bindingContext.Result = ModelBindingResult.Failed();
+
             return Task.CompletedTask;
         }
 
@@ -21,6 +22,7 @@ public class ArrayModelBinder : IModelBinder
         if (string.IsNullOrEmpty(providedValue))
         {
             bindingContext.Result = ModelBindingResult.Success(null);
+
             return Task.CompletedTask;
         }
 
@@ -32,10 +34,12 @@ public class ArrayModelBinder : IModelBinder
             .ToArray();
 
         var idsArray = Array.CreateInstance(genericType, objectArray.Length);
+
         objectArray.CopyTo(idsArray, 0);
         bindingContext.Model = idsArray;
 
         bindingContext.Result = ModelBindingResult.Success(bindingContext.Model);
+
         return Task.CompletedTask;
     }
 }

@@ -14,7 +14,7 @@ namespace Offices.IntegrationTests;
 public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
 {
     private readonly MongoDbFixture _fixture;
-    private OfficesRepository _sut;
+    private OfficesRepository _officesRepository;
 
     public OfficesRepositoryTests(MongoDbFixture fixture)
     {
@@ -77,10 +77,10 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        var result = await _sut.GetAllAsync();
+        var result = await _officesRepository.GetAllAsync();
 
         //Assert
         Assert.True(result.Any());
@@ -164,10 +164,10 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        var result = await _sut.GetCollectionByIdsAsync(preparedListOfOfficesIds);
+        var result = await _officesRepository.GetCollectionByIdsAsync(preparedListOfOfficesIds);
 
         //Assert
         Assert.True(result.Any());
@@ -245,10 +245,10 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        var result = await _sut.GetByIdAsync(preparedListOfOffices[2].OfficeId);
+        var result = await _officesRepository.GetByIdAsync(preparedListOfOffices[2].OfficeId);
 
         //Assert
         Assert.IsType<Office>(result);
@@ -322,10 +322,10 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        var result = await _sut.GetByIdAsync(ObjectId.GenerateNewId().ToString());
+        var result = await _officesRepository.GetByIdAsync(ObjectId.GenerateNewId().ToString());
 
         //Assert
         Assert.Null(result);
@@ -410,11 +410,11 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        await _sut.AddNewAsync(preparedNewOffice);
-        var allOfficesFromDatabase = await _sut.GetAllAsync();
+        await _officesRepository.AddNewAsync(preparedNewOffice);
+        var allOfficesFromDatabase = await _officesRepository.GetAllAsync();
 
         //Assert
         Assert.Equal(6 ,allOfficesFromDatabase.Count);
@@ -489,11 +489,11 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        await _sut.DeleteAsync(firstPreparedOfficeId);
-        var allOfficesFromDatabase = await _sut.GetAllAsync();
+        await _officesRepository.DeleteAsync(firstPreparedOfficeId);
+        var allOfficesFromDatabase = await _officesRepository.GetAllAsync();
 
         //Assert
         Assert.Equal(4, allOfficesFromDatabase.Count);
@@ -579,11 +579,11 @@ public class OfficesRepositoryTests : IClassFixture<MongoDbFixture>
         var collection = officesMongoDb.GetCollection<Office>("Offices");
         await collection.InsertManyAsync(preparedListOfOffices);
 
-        _sut = new OfficesRepository(collection);
+        _officesRepository = new OfficesRepository(collection);
 
         //Act
-        await _sut.UpdateAsync(idOfficeThatShouldBeUpdated, preparedOfficeForUpdate);
-        var updatedOffice = await _sut.GetByIdAsync(idOfficeThatShouldBeUpdated);
+        await _officesRepository.UpdateAsync(idOfficeThatShouldBeUpdated, preparedOfficeForUpdate);
+        var updatedOffice = await _officesRepository.GetByIdAsync(idOfficeThatShouldBeUpdated);
 
         //Assert
         Assert.Equal(preparedOfficeForUpdate.ToJson(), updatedOffice.ToJson());
