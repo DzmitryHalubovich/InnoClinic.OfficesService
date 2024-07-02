@@ -10,7 +10,6 @@ builder.Host.UseSerilog((ctx, lc) =>
 
 builder.Logging.ClearProviders();
 
-builder.ConfigureScopes();
 builder.ConfigureServices();
 
 ValidatorOptions.Global.LanguageManager.Enabled = false;

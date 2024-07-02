@@ -12,7 +12,7 @@ namespace Offices.API.Extensions;
 
 public static class WebApplicationBuilderExtention
 {
-    public static void ConfigureScopes(this WebApplicationBuilder builder)
+    public static void ConfigureServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<IMongoClient>(sp =>
         {
@@ -31,13 +31,10 @@ public static class WebApplicationBuilderExtention
         builder.Services.AddScoped<IValidator<OfficeUpdateDTO>, OfficeUpdateValidator>();
         builder.Services.AddScoped<IOfficesRepository, OfficesRepository>();
         builder.Services.AddScoped<IOfficesService, OfficesService>();
-    }
 
-    public static void ConfigureServices(this WebApplicationBuilder builder)
-    {
         builder.Services.AddAutoMapper(typeof(MapperProfile));
         builder.Services.AddControllers()
-            .AddApplicationPart(typeof(Offices.Presentation.Controllers.OfficesController).Assembly);
+            .AddApplicationPart(typeof(Presentation.Controllers.OfficesController).Assembly);
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
