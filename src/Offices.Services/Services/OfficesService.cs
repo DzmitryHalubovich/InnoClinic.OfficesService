@@ -2,9 +2,11 @@
 using Offices.Contracts.DTOs;
 using Offices.Domain.Entities;
 using Offices.Domain.Interfaces;
+using Offices.Infrastructure.HttpClients;
 using Offices.Services.Abstractions;
 using OneOf;
 using OneOf.Types;
+using System.Net.Http;
 
 namespace Offices.Services.Services;
 
@@ -12,11 +14,13 @@ public class OfficesService : IOfficesService
 {
     private readonly IOfficesRepository _officesRepository;
     private readonly IMapper _mapper;
+    private readonly DocumentsServiceHttpClient _httpClient;
 
-    public OfficesService(IOfficesRepository officesRepository, IMapper mapper)
+    public OfficesService(IOfficesRepository officesRepository, IMapper mapper, DocumentsServiceHttpClient httpClient)
     {
         _officesRepository = officesRepository;
         _mapper = mapper;
+        _httpClient = httpClient;
     }
 
     public async Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetAllOfficesAsync()
@@ -64,6 +68,13 @@ public class OfficesService : IOfficesService
     public async Task<string> AddNewOfficeAsync(OfficeCreateDTO newOffice)
     {
         var mappedOffice = _mapper.Map<Office>(newOffice);
+
+        if (newOffice.OfficePhoto is not null)
+        {
+            var officePhotoUrl = await _httpClient.SaveFile(newOffice.OfficePhoto);
+
+            mappedOffice.OfficePhotoUrl = officePhotoUrl;
+        }
 
         await _officesRepository.AddNewAsync(mappedOffice);
 

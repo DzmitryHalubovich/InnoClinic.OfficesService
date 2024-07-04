@@ -9,7 +9,6 @@ public class OfficeCreateDtoCustomization : ICustomization
     public void Customize(IFixture fixture)
     {
         fixture.Customize<OfficeCreateDTO>(composer => composer
-            .With(dto => dto.PhotoId, fixture.Create<string>())
             .With(dto => dto.City, TruncateString(fixture.Create<string>(), 100))
             .With(dto => dto.Street, TruncateString(fixture.Create<string>(), 100))
             .With(dto => dto.HouseNumber, TruncateString(fixture.Create<string>(), 20))

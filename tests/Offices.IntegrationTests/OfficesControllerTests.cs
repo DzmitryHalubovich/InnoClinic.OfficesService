@@ -22,7 +22,7 @@ public class OfficesControllerTests : IClassFixture<MongoDbFixture>
             new Office()
             {
                 OfficeId = ObjectId.GenerateNewId().ToString(),
-                PhotoId = null,
+                OfficePhotoUrl = null,
                 City = "Test city 1",
                 Street = "Test street 1",
                 HouseNumber = "Test house number 1",
@@ -33,7 +33,7 @@ public class OfficesControllerTests : IClassFixture<MongoDbFixture>
             new Office()
             {
                 OfficeId = ObjectId.GenerateNewId().ToString(),
-                PhotoId = null,
+                OfficePhotoUrl = null,
                 City = "Test city 2",
                 Street = "Test street 2",
                 HouseNumber = "Test house number 2",
@@ -44,7 +44,7 @@ public class OfficesControllerTests : IClassFixture<MongoDbFixture>
             new Office()
             {
                 OfficeId = ObjectId.GenerateNewId().ToString(),
-                PhotoId = null,
+                OfficePhotoUrl = null,
                 City = "Test city 3",
                 Street = "Test street 3",
                 HouseNumber = "Test house number 3",
@@ -55,7 +55,7 @@ public class OfficesControllerTests : IClassFixture<MongoDbFixture>
             new Office()
             {
                 OfficeId = ObjectId.GenerateNewId().ToString(),
-                PhotoId = null,
+                OfficePhotoUrl = null,
                 City = "Test city 4",
                 Street = "Test street 4",
                 HouseNumber = "Test house number 4",
@@ -66,7 +66,7 @@ public class OfficesControllerTests : IClassFixture<MongoDbFixture>
             new Office()
             {
                 OfficeId = ObjectId.GenerateNewId().ToString(),
-                PhotoId = null,
+                OfficePhotoUrl = null,
                 City = "Test city 5",
                 Street = "Test street 5",
                 HouseNumber = "Test house number 5",
