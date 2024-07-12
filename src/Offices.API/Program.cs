@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Offices.API.Extensions;
 using Serilog;
 
@@ -11,6 +12,9 @@ builder.Host.UseSerilog((ctx, lc) =>
 builder.Logging.ClearProviders();
 
 builder.ConfigureServices();
+
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => HealthCheckResult.Healthy());
 
 ValidatorOptions.Global.LanguageManager.Enabled = false;
 
@@ -27,6 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapHealthChecks("/_health");
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
