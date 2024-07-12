@@ -10,7 +10,7 @@ public class OfficeUpdateValidator : AbstractValidator<OfficeUpdateDTO>
     {
         RuleFor(o => o.IsActive)
             .Must((status) => (status == Status.Active || status == Status.Inactive));
-        RuleFor(o => o.PhotoId)
+        RuleFor(o => o.OfficePhotoUrl)
             .Must(o => o is null || o.Length > 0);
         RuleFor(o => o.City)
             .NotEmpty()

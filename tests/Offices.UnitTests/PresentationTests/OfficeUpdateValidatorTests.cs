@@ -23,7 +23,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeModel = new OfficeUpdateDTO(
-                PhotoId: "TestPhotoId",
+                OfficePhotoUrl: "TestPhotoId",
                 City: "Test city",
                 Street: "Test street",
                 HouseNumber: "11",
@@ -46,7 +46,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeModel = new OfficeUpdateDTO(
-                PhotoId: photoId,
+                OfficePhotoUrl: photoId,
                 City: "Test city",
                 Street: "Test street",
                 HouseNumber: "11",
@@ -69,7 +69,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeUpdateModel = new OfficeUpdateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: city,
                Street: "Test street",
                HouseNumber: "11",
@@ -92,7 +92,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeUpdateModel = new OfficeUpdateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: street,
                HouseNumber: "11",
@@ -115,7 +115,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeUpdateModel = new OfficeUpdateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: "Test street",
                HouseNumber: houseNumber,
@@ -139,7 +139,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeUpdateModel = new OfficeUpdateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: "Test street",
                HouseNumber: "11",
@@ -164,7 +164,7 @@ public class OfficeUpdateValidatorTests
     {
         //Arrange
         var fakeOfficeUpdateModel = new OfficeUpdateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: "Test street",
                HouseNumber: "11",

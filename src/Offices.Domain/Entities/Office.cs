@@ -9,8 +9,8 @@ public class Office
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
     public string OfficeId { get; set; }
 
-    [BsonElement("photoId")]
-    public string? PhotoId { get; set; }
+    [BsonElement("officePhotoUrl")]
+    public string? OfficePhotoUrl { get; set; }
 
     [BsonElement("city")]
     public string City { get; set; } = null!;

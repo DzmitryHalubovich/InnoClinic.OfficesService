@@ -51,7 +51,7 @@ public class OfficesController : ControllerBase
     /// <response code="404">Returns if there aren't any offices in the database</response>
     [HttpGet]
     //[Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OfficeDetailsDTO>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllOffices()
     {
@@ -125,7 +125,7 @@ public class OfficesController : ControllerBase
     /// <response code="404">Returns if office with spesified id doesn't exist in the database</response>
     [HttpGet("{officeId}", Name = "GetOfficeById")]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfficeDetailsDTO))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOfficeById([FromRoute] string officeId)
     {
