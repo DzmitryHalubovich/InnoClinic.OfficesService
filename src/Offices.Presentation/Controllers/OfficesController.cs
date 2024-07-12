@@ -19,8 +19,8 @@ public class OfficesController : ControllerBase
         _officesService = officesService;
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OfficeDetailsDTO>))]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfficeDetailsDTO))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllOffices()
     {

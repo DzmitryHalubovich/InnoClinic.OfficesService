@@ -43,7 +43,7 @@ public class OfficeCreateValidatorTests
     {
         //Arrange
         var fakeOfficeModel = new OfficeCreateDTO(
-                PhotoId: photoId,
+                OfficePhotoUrl: photoId,
                 City: "Test city",
                 Street: "Test street",
                 HouseNumber: "11",
@@ -66,7 +66,7 @@ public class OfficeCreateValidatorTests
     {
         //Arrange
         var fakeOfficeModel = new OfficeCreateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: city,
                Street: "Test street",
                HouseNumber: "11",
@@ -89,7 +89,7 @@ public class OfficeCreateValidatorTests
     {
         //Arrange
         var fakeOfficeCreateModel = new OfficeCreateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: street,
                HouseNumber: "11",
@@ -112,7 +112,7 @@ public class OfficeCreateValidatorTests
     {
         //Arrange
         var fakeOfficeCreateModel = new OfficeCreateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: "Test street",
                HouseNumber: houseNumber,
@@ -135,7 +135,7 @@ public class OfficeCreateValidatorTests
     {
         //Arrange
         var fakeOfficeCreateModel = new OfficeCreateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: "Test street",
                HouseNumber: "11",
@@ -160,7 +160,7 @@ public class OfficeCreateValidatorTests
     {
         //Arrange
         var fakeOfficeCreateModel = new OfficeCreateDTO(
-               PhotoId: "Test photo id",
+               OfficePhotoUrl: "Test photo id",
                City: "Test city",
                Street: "Test street",
                HouseNumber: "11",
