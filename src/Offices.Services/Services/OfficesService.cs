@@ -69,12 +69,12 @@ public class OfficesService : IOfficesService
     {
         var mappedOffice = _mapper.Map<Office>(newOffice);
 
-        if (newOffice.OfficePhoto is not null)
+/*        if (newOffice.OfficePhotoUrl is not null)
         {
-            var officePhotoUrl = await _httpClient.SaveFile(newOffice.OfficePhoto);
+            var officePhotoUrl = await _httpClient.SaveFile(newOffice.OfficePhotoUrl);
 
             mappedOffice.OfficePhotoUrl = officePhotoUrl;
-        }
+        }*/
 
         await _officesRepository.AddNewAsync(mappedOffice);
 

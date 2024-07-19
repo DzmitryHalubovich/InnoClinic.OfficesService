@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Offices.Contracts.DTOs;
 using Offices.Presentation.ModelBinders;
 using Offices.Services.Abstractions;
@@ -18,9 +18,10 @@ public class OfficesController : ControllerBase
     public OfficesController(IOfficesService officesService) =>
         _officesService = officesService;
 
+    [AllowAnonymous]
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OfficeDetailsDTO>))]
     [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OfficeDetailsDTO>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllOffices()
     {
