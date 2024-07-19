@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Offices.Contracts.DTOs;
 using Offices.Domain.Entities;
@@ -34,6 +35,7 @@ public static class WebApplicationBuilderExtention
         builder.Services.AddSingleton<IMongoClient>(sp =>
         {
             var connectionString = builder.Configuration["MongoDatabase:ConnectionString"];
+
             return new MongoClient(connectionString);
         });
 
@@ -69,7 +71,34 @@ public static class WebApplicationBuilderExtention
         builder.Services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy());
 
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(opt =>
+        {
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Place to add JWT with Bearer",
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Name = "Bearer",
+                    },
+                    new List<string>()
+                }
+            });
+        });
+
         builder.Services.AddAutoMapper(typeof(MapperProfile));
 
         builder.Services.AddControllers()
