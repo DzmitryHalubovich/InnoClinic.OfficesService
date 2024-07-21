@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Offices.Contracts.DTOs;
 using Offices.Presentation.ModelBinders;
 using Offices.Services.Abstractions;
+using Serilog;
 using System.Net.Mime;
 
 namespace Offices.Presentation.Controllers;
@@ -42,6 +43,8 @@ public class OfficesController : ControllerBase
 
             return getAllOfficesResult.Match<IActionResult>(Ok, notFound => NotFound());
         }
+
+        Log.Information($"Return data from cache, type: {offices.First().GetType()}, count: {offices.Count}");
 
         return Ok(offices);
     }
