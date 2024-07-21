@@ -14,10 +14,14 @@ namespace Offices.Presentation.Controllers;
 public class OfficesController : ControllerBase
 {
     private readonly IOfficesService _officesService;
+    private readonly IRedisCahceService _cacheService;
 
-    public OfficesController(IOfficesService officesService) =>
+    public OfficesController(IOfficesService officesService, IRedisCahceService cahceService)
+    {
         _officesService = officesService;
-
+        _cacheService = cahceService;
+    }
+        
     [AllowAnonymous]
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
@@ -25,9 +29,21 @@ public class OfficesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllOffices()
     {
-        var getAllOfficesResult = await _officesService.GetAllOfficesAsync();
+        var instanceId = GetInstanceId();
+        var cacheKey = $"Offices_Cache_{instanceId}";
 
-        return getAllOfficesResult.Match<IActionResult>(Ok, notFound => NotFound());
+        var offices = _cacheService.GetCachedData<List<OfficeDetailsDTO>>(cacheKey);
+
+        if (offices is null)
+        {
+            var getAllOfficesResult = await _officesService.GetAllOfficesAsync();
+
+            _cacheService.SetCachedData(cacheKey, getAllOfficesResult.Value, TimeSpan.FromMinutes(5));
+
+            return getAllOfficesResult.Match<IActionResult>(Ok, notFound => NotFound());
+        }
+
+        return Ok(offices);
     }
 
     [HttpGet("collection/({officesIds})")]
@@ -100,5 +116,20 @@ public class OfficesController : ControllerBase
         }
 
         return BadRequest(validationResult.ToDictionary());
+    }
+
+
+    private string GetInstanceId()
+    {
+        var instanceId = HttpContext.Session.GetString("InstanceId");
+
+        if (string.IsNullOrEmpty(instanceId))
+        {
+            instanceId = Guid.NewGuid().ToString();
+
+            HttpContext.Session.SetString("InstanceId", instanceId);
+        }
+
+        return instanceId;
     }
 }
