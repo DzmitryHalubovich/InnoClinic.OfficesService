@@ -1,22 +1,7 @@
 using FluentValidation;
 using Offices.API.Extensions;
-using Offices.Services.Abstractions;
-using Offices.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
-    options.InstanceName = "OfficesCatalog_"; 
-});
-
-builder.Services.AddScoped<IRedisCahceService, RedisCacheService>();
-
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(5);
-});
 
 builder.ConfigureServices();
 

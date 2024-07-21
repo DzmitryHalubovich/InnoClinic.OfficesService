@@ -23,6 +23,7 @@ public static class WebApplicationBuilderExtention
         builder.Services.AddScoped<IValidator<OfficeUpdateDTO>, OfficeUpdateValidator>();
         builder.Services.AddScoped<IOfficesRepository, OfficesRepository>();
         builder.Services.AddScoped<IOfficesService, OfficesService>();
+        builder.Services.AddScoped<IRedisCahceService, RedisCacheService>();
 
         builder.Services.AddHttpClient<DocumentsServiceHttpClient>();
 
@@ -31,6 +32,17 @@ public static class WebApplicationBuilderExtention
         builder.Host.UseSerilog((ctx, lc) =>
             lc.WriteTo.Console()
             .ReadFrom.Configuration(ctx.Configuration));
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+            options.InstanceName = "OfficesCatalog_";
+        });
+
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(5);
+        });
 
         builder.Services.AddSingleton<IMongoClient>(sp =>
         {
