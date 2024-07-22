@@ -23,8 +23,8 @@ app.UseHttpsRedirection();
 app.UseSession();
 app.MapHealthChecks("/_health");
 app.UseAuthorization();
-app.MapControllers()
-    .RequireAuthorization("ApiScope");
+app.MapControllers();
+    //.RequireAuthorization("ApiScope");
 
 app.Run();
 

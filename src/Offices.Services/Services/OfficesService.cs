@@ -14,13 +14,11 @@ public class OfficesService : IOfficesService
 {
     private readonly IOfficesRepository _officesRepository;
     private readonly IMapper _mapper;
-    private readonly DocumentsServiceHttpClient _httpClient;
 
-    public OfficesService(IOfficesRepository officesRepository, IMapper mapper, DocumentsServiceHttpClient httpClient)
+    public OfficesService(IOfficesRepository officesRepository, IMapper mapper)
     {
         _officesRepository = officesRepository;
         _mapper = mapper;
-        _httpClient = httpClient;
     }
 
     public async Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetAllOfficesAsync()
@@ -68,13 +66,6 @@ public class OfficesService : IOfficesService
     public async Task<string> AddNewOfficeAsync(OfficeCreateDTO newOffice)
     {
         var mappedOffice = _mapper.Map<Office>(newOffice);
-
-/*        if (newOffice.OfficePhotoUrl is not null)
-        {
-            var officePhotoUrl = await _httpClient.SaveFile(newOffice.OfficePhotoUrl);
-
-            mappedOffice.OfficePhotoUrl = officePhotoUrl;
-        }*/
 
         await _officesRepository.AddNewAsync(mappedOffice);
 

@@ -72,12 +72,13 @@ public class OfficesController : ControllerBase
         return getOfficeResult.Match<IActionResult>(Ok, notFound => NotFound());
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddOffice(IValidator<OfficeCreateDTO> validator, [FromForm] OfficeCreateDTO newOffice)
+    public async Task<IActionResult> AddOffice(IValidator<OfficeCreateDTO> validator, [FromBody] OfficeCreateDTO newOffice)
     {
         var validationResult = validator.Validate(newOffice);
 
