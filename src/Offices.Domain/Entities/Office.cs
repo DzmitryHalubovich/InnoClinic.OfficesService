@@ -29,4 +29,9 @@ public class Office
 
     [BsonElement("isActive")]
     public Status IsActive { get; set; }
+
+    [BsonIgnore]
+    public string OfficeAddress => 
+        string.Join(" ",new string[] { City, Street, HouseNumber, OfficeNumber }
+              .Where(x => x is not null));
 }

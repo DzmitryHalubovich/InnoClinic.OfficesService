@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
+using InnoClinic.SharedModels.MQMessages.Offices;
+using MassTransit;
 using Offices.Contracts.DTOs;
 using Offices.Domain.Entities;
 using Offices.Domain.Interfaces;
-using Offices.Infrastructure.HttpClients;
 using Offices.Services.Abstractions;
 using OneOf;
 using OneOf.Types;
-using System.Net.Http;
 
 namespace Offices.Services.Services;
 
@@ -14,11 +14,13 @@ public class OfficesService : IOfficesService
 {
     private readonly IOfficesRepository _officesRepository;
     private readonly IMapper _mapper;
+    private readonly IPublishEndpoint _messagePublisher;
 
-    public OfficesService(IOfficesRepository officesRepository, IMapper mapper)
+    public OfficesService(IOfficesRepository officesRepository, IMapper mapper, IPublishEndpoint messagePublisher)
     {
         _officesRepository = officesRepository;
         _mapper = mapper;
+        _messagePublisher = messagePublisher;
     }
 
     public async Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetAllOfficesAsync()
@@ -98,6 +100,18 @@ public class OfficesService : IOfficesService
         _mapper.Map(updatedOffice,office);
 
         await _officesRepository.UpdateAsync(officeId, office);
+
+        var timeout = TimeSpan.FromSeconds(30);
+
+        using var source = new CancellationTokenSource(timeout);
+
+        await _messagePublisher.Publish<OfficeUpdatedMessage>(
+            new()
+            {
+                OfficeId = office.OfficeId,
+                OfficeAddress = office.OfficeAddress
+            }, 
+            source.Token);
 
         return new Success();
     }

@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using MassTransit;
+using MassTransit.Testing;
 using Moq;
 using Offices.Contracts.DTOs;
 using Offices.Domain.Entities;
@@ -14,12 +16,13 @@ public class OfficesServiceTests
     private readonly OfficesService _officesService;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IOfficesRepository> _officesRepositoryMock;
+    private readonly Mock<IPublishEndpoint> _messagePublisherMock;
 
     public OfficesServiceTests()
     {
         _mapperMock = new Mock<IMapper>();
         _officesRepositoryMock = new Mock<IOfficesRepository>();
-        _officesService = new OfficesService(_officesRepositoryMock.Object, _mapperMock.Object);
+        _officesService = new OfficesService(_officesRepositoryMock.Object, _mapperMock.Object, _messagePublisherMock.Object);
     }
 
     [Fact]
