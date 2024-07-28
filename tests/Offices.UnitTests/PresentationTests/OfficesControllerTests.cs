@@ -205,34 +205,4 @@ public class OfficesControllerTests
         _officesServiceMock.Verify(x => x.UpdateOfficeAsync(fakeOfficeId, fakeOfficeModel), Times.Once);
         _officeUpdateValidator.Verify(x => x.Validate(fakeOfficeModel), Times.Once);
     }
-
-    [Fact]
-    public async Task GetOfficesByIds_ServiceReturnsListOfOffices_OkResult()
-    {
-        //Arrange
-        _officesServiceMock.Setup(x => x.GetOfficesByIdsAsync(It.IsAny<IEnumerable<string>>()))
-            .ReturnsAsync(It.IsAny<List<OfficeDetailsDTO>>());
-
-        //Act
-        var result = await _officesController.GetOfficesByIds(It.IsAny<IEnumerable<string>>());
-
-        //Assert
-        Assert.IsType<OkObjectResult>(result);
-        _officesServiceMock.Verify(x => x.GetOfficesByIdsAsync(It.IsAny<IEnumerable<string>>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetOfficesByIds_ServiceReturnsNothing_NotFoundResult()
-    {
-        //Arrange
-        _officesServiceMock.Setup(x => x.GetOfficesByIdsAsync(It.IsAny<IEnumerable<string>>()))
-            .ReturnsAsync(new NotFound());
-
-        //Act
-        var result = await _officesController.GetOfficesByIds(It.IsAny<IEnumerable<string>>());
-
-        //Assert
-        Assert.IsType<NotFoundResult>(result);
-        _officesServiceMock.Verify(x => x.GetOfficesByIdsAsync(It.IsAny<IEnumerable<string>>()), Times.Once);
-    }
 }

@@ -70,52 +70,6 @@ public class OfficesServiceTests
     }
 
     [Fact]
-    public async Task GetOfficesByIdsAsync_RepositoryReturnsCollectionOfOffices_ReturnsMappedListOfOffices()
-    {
-        //Arrange
-        var officesIdsCollection = new Fixture().Create<IEnumerable<string>>();
-        var officesListMock = new Fixture().Create<List<Office>>();
-        var mappedOfficesListMock = new Fixture().Create<List<OfficeDetailsDTO>>();
-
-        _officesRepositoryMock.Setup(x => x.GetCollectionByIdsAsync(officesIdsCollection))
-            .ReturnsAsync(officesListMock);
-
-        _mapperMock.Setup(x => x.Map<List<OfficeDetailsDTO>>(officesListMock))
-            .Returns(mappedOfficesListMock);
-
-        //Act
-        var result = await _officesService.GetOfficesByIdsAsync(officesIdsCollection);
-
-        //Assert
-        Assert.IsType<List<OfficeDetailsDTO>>(result.Value);
-        _officesRepositoryMock.Verify(x => x.GetCollectionByIdsAsync(officesIdsCollection), Times.Once);
-        _mapperMock.Verify(x => x.Map<List<OfficeDetailsDTO>>(officesListMock), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetOfficesByIdsAsync_RepositoryReturnsNothing_ReturnsNotFoundResult()
-    {
-        //Arrange
-        var officesIdsCollection = new Fixture().Create<IEnumerable<string>>();
-        var officesListMock = new List<Office>();
-        var mappedOfficesListMock = new Fixture().Create<List<OfficeDetailsDTO>>();
-
-        _officesRepositoryMock.Setup(x => x.GetCollectionByIdsAsync(officesIdsCollection))
-            .ReturnsAsync(officesListMock);
-
-        _mapperMock.Setup(x => x.Map<List<OfficeDetailsDTO>>(officesListMock))
-            .Returns(mappedOfficesListMock);
-
-        //Act
-        var result = await _officesService.GetOfficesByIdsAsync(officesIdsCollection);
-
-        //Assert
-        Assert.IsType<NotFound>(result.Value);
-        _officesRepositoryMock.Verify(x => x.GetCollectionByIdsAsync(officesIdsCollection), Times.Once);
-        _mapperMock.Verify(x => x.Map<List<OfficeDetailsDTO>>(officesListMock), Times.Never);
-    }
-
-    [Fact]
     public async Task GetOfficeByIdAsync_OfficeWasFound_ReturnsMappedOffice()
     {
         //Arrange

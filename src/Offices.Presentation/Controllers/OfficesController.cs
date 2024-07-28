@@ -49,18 +49,6 @@ public class OfficesController : ControllerBase
         return Ok(offices);
     }
 
-    [HttpGet("collection/({officesIds})")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfficeDetailsDTO))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetOfficesByIds(
-        [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<string> officesIds)
-    {
-        var getOfficesResult = await _officesService.GetOfficesByIdsAsync(officesIds);
-
-        return getOfficesResult.Match<IActionResult>(Ok, notFound => NotFound());
-    }
-
     [HttpGet("{officeId}", Name = "GetOfficeById")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfficeDetailsDTO))]

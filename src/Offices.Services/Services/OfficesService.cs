@@ -13,8 +13,8 @@ namespace Offices.Services.Services;
 public class OfficesService : IOfficesService
 {
     private readonly IOfficesRepository _officesRepository;
-    private readonly IMapper _mapper;
     private readonly IPublishEndpoint _messagePublisher;
+    private readonly IMapper _mapper;
 
     public OfficesService(IOfficesRepository officesRepository, IMapper mapper, IPublishEndpoint messagePublisher)
     {
@@ -26,20 +26,6 @@ public class OfficesService : IOfficesService
     public async Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetAllOfficesAsync()
     {
         var offices = await _officesRepository.GetAllAsync();
-
-        if (!offices.Any())
-        {
-            return new NotFound();
-        }
-
-        var mappedOfficesCollection = _mapper.Map<List<OfficeDetailsDTO>>(offices);
-
-        return mappedOfficesCollection;
-    }
-
-    public async Task<OneOf<List<OfficeDetailsDTO>, NotFound>> GetOfficesByIdsAsync(IEnumerable<string> officesIds)
-    {
-        var offices = await _officesRepository.GetCollectionByIdsAsync(officesIds);
 
         if (!offices.Any())
         {
