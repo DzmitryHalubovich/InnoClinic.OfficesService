@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Offices.Contracts.DTOs;
 using Offices.Presentation.ModelBinders;
 using Offices.Services.Abstractions;
+using OneOf.Types;
 using Serilog;
 using System.Net.Mime;
 
@@ -39,9 +40,12 @@ public class OfficesController : ControllerBase
         {
             var getAllOfficesResult = await _officesService.GetAllOfficesAsync();
 
-            _cacheService.SetCachedData(cacheKey, getAllOfficesResult.Value, TimeSpan.FromMinutes(5));
-
-            return getAllOfficesResult.Match<IActionResult>(Ok, notFound => NotFound());
+            return getAllOfficesResult.Match<IActionResult>(
+                success => {
+                    _cacheService.SetCachedData(cacheKey, getAllOfficesResult.Value, TimeSpan.FromSeconds(45));
+                    return Ok(getAllOfficesResult.Value);
+                }, 
+                notfound => NotFound());
         }
 
         Log.Information($"Return data from cache, type: {offices.First().GetType()}, count: {offices.Count}");

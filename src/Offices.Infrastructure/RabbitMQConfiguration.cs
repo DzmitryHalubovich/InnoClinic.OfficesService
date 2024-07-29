@@ -1,8 +1,8 @@
 ﻿namespace Offices.Infrastructure;
 
-public class MassTransitRabbitMqConfiguration
+public class RabbitMQConfiguration
 {
-    public string Host {  get; set; }
+    public string HostName {  get; set; }
 
     public string Username { get; set; }
 

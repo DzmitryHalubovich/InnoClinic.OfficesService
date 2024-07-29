@@ -184,6 +184,7 @@ public class OfficesServiceTests
         var fakeOfficeId = new Fixture().Create<string>().Substring(0, 24);
         var fakeOffice = new Fixture().Create<Office>();
         var fakeOfficeUpdateModel = new Fixture().Create<OfficeUpdateDTO>();
+        var fakeMessagePublisher = new Mock<IPublishEndpoint>();
 
         _officesRepositoryMock.Setup(x => x.GetByIdAsync(fakeOfficeId))
             .ReturnsAsync(fakeOffice);
@@ -197,7 +198,7 @@ public class OfficesServiceTests
 
         IMapper mapper = new Mapper(configuration);
 
-        var officesService = new OfficesService(_officesRepositoryMock.Object, mapper);
+        var officesService = new OfficesService(_officesRepositoryMock.Object, mapper, fakeMessagePublisher.Object);
 
         //Act
         var result = await officesService.UpdateOfficeAsync(fakeOfficeId, fakeOfficeUpdateModel);

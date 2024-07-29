@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MassTransit;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -6,6 +7,7 @@ using MongoDB.Driver;
 using Offices.Contracts.DTOs;
 using Offices.Domain.Entities;
 using Offices.Domain.Interfaces;
+using Offices.Infrastructure;
 using Offices.Infrastructure.HttpClients;
 using Offices.Infrastructure.Repositories;
 using Offices.Presentation.Validators;
@@ -117,5 +119,28 @@ public static class WebApplicationBuilderExtention
             .AddApplicationPart(typeof(Presentation.Controllers.OfficesController).Assembly);
 
         builder.Services.AddEndpointsApiExplorer();
+
+        var rabbitMqConfiguration = builder.Configuration
+            .GetSection("RabbitMq")
+            .Get<RabbitMQConfiguration>();
+
+        builder.Services.AddMassTransit(x =>
+        {
+            x.SetKebabCaseEndpointNameFormatter();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(rabbitMqConfiguration.HostName, "/", h =>
+                {
+                    h.Username(rabbitMqConfiguration.Username);
+                    h.Password(rabbitMqConfiguration.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+
+                cfg.AutoDelete = true;
+            });
+        });
+
     }
 }

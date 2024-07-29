@@ -2,20 +2,23 @@
 using AutoFixture.Xunit2;
 using FluentValidation;
 using FluentValidation.Results;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Offices.Contracts.DTOs;
 using Offices.Presentation.Controllers;
 using Offices.Services.Abstractions;
 using OneOf.Types;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace Offices.UnitTests.PresentationTests;
 
 public class OfficesControllerTests
 {
-    private readonly Mock<IOfficesService> _officesServiceMock;
     private readonly Mock<IValidator<OfficeCreateDTO>> _officeCreateValidator;
     private readonly Mock<IValidator<OfficeUpdateDTO>> _officeUpdateValidator;
+    private readonly Mock<IRedisCahceService> _redisCacheServiceMock;
+    private readonly Mock<IOfficesService> _officesServiceMock;
     private readonly OfficesController _officesController;
 
     public OfficesControllerTests()
@@ -23,7 +26,7 @@ public class OfficesControllerTests
         _officesServiceMock = new Mock<IOfficesService>();
         _officeCreateValidator = new Mock<IValidator<OfficeCreateDTO>>();
         _officeUpdateValidator = new Mock<IValidator<OfficeUpdateDTO>>();
-        _officesController = new OfficesController(_officesServiceMock.Object);
+        _officesController = new OfficesController(_officesServiceMock.Object, _redisCacheServiceMock.Object);
     }
 
     [Fact]

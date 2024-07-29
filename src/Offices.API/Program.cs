@@ -1,31 +1,7 @@
 using FluentValidation;
-using MassTransit;
 using Offices.API.Extensions;
-using Offices.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var MTRabbitMqOptions = builder.Configuration
-    .GetSection("MassTransitRabbitMq")
-    .Get<MassTransitRabbitMqConfiguration>();
-
-builder.Services.AddMassTransit(x =>
-{
-    x.SetKebabCaseEndpointNameFormatter();
-
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host(MTRabbitMqOptions.Host,"/", h =>
-        {
-            h.Username(MTRabbitMqOptions.Username);
-            h.Password(MTRabbitMqOptions.Password);
-        });
-
-        cfg.ConfigureEndpoints(context);
-
-        cfg.AutoDelete = true;
-    });
-});
 
 builder.ConfigureServices();
 
