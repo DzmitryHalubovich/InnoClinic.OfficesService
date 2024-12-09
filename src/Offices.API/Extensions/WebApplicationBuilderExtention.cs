@@ -1,0 +1,146 @@
+﻿using FluentValidation;
+using MassTransit;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using Offices.Contracts.DTOs;
+using Offices.Domain.Entities;
+using Offices.Domain.Interfaces;
+using Offices.Infrastructure;
+using Offices.Infrastructure.HttpClients;
+using Offices.Infrastructure.Repositories;
+using Offices.Presentation.Validators;
+using Offices.Services.Abstractions;
+using Offices.Services.Services;
+using Serilog;
+
+namespace Offices.API.Extensions;
+
+public static class WebApplicationBuilderExtention
+{
+    public static void ConfigureServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IValidator<OfficeCreateDTO>, OfficeCreateValidator>();
+        builder.Services.AddScoped<IValidator<OfficeUpdateDTO>, OfficeUpdateValidator>();
+        builder.Services.AddScoped<IOfficesRepository, OfficesRepository>();
+        builder.Services.AddScoped<IOfficesService, OfficesService>();
+        builder.Services.AddScoped<IRedisCahceService, RedisCacheService>();
+
+        builder.Services.AddHttpClient<DocumentsServiceHttpClient>();
+
+        builder.Logging.ClearProviders();
+
+        builder.Host.UseSerilog((ctx, lc) =>
+            lc.WriteTo.Console()
+            .ReadFrom.Configuration(ctx.Configuration));
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+            options.InstanceName = "OfficesCatalog_";
+        });
+
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(5);
+        });
+
+        builder.Services.AddSingleton<IMongoClient>(sp =>
+        {
+            var connectionString = builder.Configuration["MongoDatabase:ConnectionString"];
+
+            return new MongoClient(connectionString);
+        });
+
+        builder.Services.AddScoped(sp =>
+        {
+            var client = sp.GetRequiredService<IMongoClient>();
+            var database = builder.Configuration["MongoDatabase:DatabaseName"];
+
+            return client.GetDatabase(database)
+                .GetCollection<Office>(builder.Configuration["MongoDatabase:OfficesCollectionName"]);
+        });
+
+        builder.Services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = "https://localhost:5005";
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("ApiScope", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("scope", "offices.api");
+            });
+        });
+
+        builder.Services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy());
+
+        builder.Services.AddSwaggerGen(opt =>
+        {
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Place to add JWT with Bearer",
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Name = "Bearer",
+                    },
+                    new List<string>()
+                }
+            });
+        });
+
+        builder.Services.AddAutoMapper(typeof(MapperProfile));
+
+        builder.Services.AddControllers()
+            .AddApplicationPart(typeof(Presentation.Controllers.OfficesController).Assembly);
+
+        builder.Services.AddEndpointsApiExplorer();
+
+        var rabbitMqConfiguration = builder.Configuration
+            .GetSection("RabbitMq")
+            .Get<RabbitMQConfiguration>();
+
+        builder.Services.AddMassTransit(x =>
+        {
+            x.SetKebabCaseEndpointNameFormatter();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(rabbitMqConfiguration.HostName, "/", h =>
+                {
+                    h.Username(rabbitMqConfiguration.Username);
+                    h.Password(rabbitMqConfiguration.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+
+                cfg.AutoDelete = true;
+            });
+        });
+
+    }
+}
